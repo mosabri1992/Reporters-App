@@ -60,5 +60,25 @@ router.get('/profile/:id', auth, async(req, res) => {
 
 })
 
+///////Update Information/////////
+
+router.patch('/profile/:id', auth, async(req, res) => {
+    try {
+        const updates = Object.keys(req.body)
+        console.log(updates)
+        const reporter = await Reporter.findById(req.params.id)
+        if (!reporter) {
+            return res.status(404).send('user not found')
+        }
+        updates.forEach((update) => {
+            reporter[update] = req.body[update]
+        })
+        await reporter.save()
+        console.log(reporter)
+        res.status(200).send(reporter)
+    } catch (error) {
+        res.status(404).send(error)
+    }
+})
 
 module.exports = router
